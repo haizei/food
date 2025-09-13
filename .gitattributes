@@ -1,0 +1,43 @@
+# 设置默认行为，以防人们没有设置 core.autocrlf
+* text=auto
+
+# 明确声明文本文件，以便进行行尾规范化
+*.ts text
+*.js text
+*.json text
+*.md text
+*.less text
+*.css text
+*.wxml text
+*.wxss text
+
+# 声明二进制文件
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+
+# 微信小程序特定文件
+*.wxml text
+*.wxss text
+*.wxs text
+
+# 配置文件
+*.config.js text
+*.config.json text
+project.config.json text
+tsconfig.json text
+
+# 文档文件
+*.md text
+docs/**/*.md text
+
+# 确保这些文件始终使用 LF 行尾
+*.sh text eol=lf
+*.bat text eol=crlf

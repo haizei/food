@@ -1,15 +1,96 @@
 {
-  "name": "miniprogram-ts-less-quickstart",
+  "name": "foodcal-miniprogram",
   "version": "1.0.0",
-  "description": "",
+  "description": "智能识别食物热量小程序 - 基于AI图像识别技术的健康管理应用",
+  "main": "miniprogram/app.js",
   "scripts": {
+    "dev": "echo '请使用微信开发者工具打开项目进行开发'",
+    "build": "echo '请使用微信开发者工具进行构建'",
+    "lint": "eslint miniprogram/**/*.ts",
+    "lint:fix": "eslint miniprogram/**/*.ts --fix",
+    "type-check": "tsc --noEmit",
+    "test": "echo '测试功能待实现'",
+    "docs": "echo '文档生成功能待实现'"
   },
-  "keywords": [],
-  "author": "",
-  "license": "",
+  "keywords": [
+    "微信小程序",
+    "食物识别",
+    "AI",
+    "健康管理",
+    "营养分析",
+    "TypeScript",
+    "miniprogram"
+  ],
+  "author": "FoodCal Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/foodcal-miniprogram.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/foodcal-miniprogram/issues"
+  },
+  "homepage": "https://github.com/your-org/foodcal-miniprogram#readme",
   "dependencies": {
+    "miniprogram-api-typings": "^2.8.3-1"
   },
   "devDependencies": {
-    "miniprogram-api-typings": "^2.8.3-1"
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "miniprogram": {
+    "appid": "wxee0f76b8f3c2e05b",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "enhance": true,
+      "postcss": true,
+      "preloadBackgroundData": false,
+      "minified": true,
+      "newFeature": false,
+      "coverView": true,
+      "nodeModules": false,
+      "autoAudits": false,
+      "showShadowRootInWxmlPanel": true,
+      "scopeDataCheck": false,
+      "uglifyFileName": false,
+      "checkInvalidKey": true,
+      "checkSiteMap": true,
+      "uploadWithSourceMap": true,
+      "compileHotReLoad": false,
+      "lazyloadPlaceholderEnable": false,
+      "useMultiFrameRuntime": true,
+      "useApiHook": true,
+      "useApiHostProcess": true,
+      "babelSetting": {
+        "ignore": [],
+        "disablePlugins": [],
+        "outputPath": ""
+      },
+      "enableEngineNative": false,
+      "useIsolateContext": true,
+      "userConfirmedBundleSwitch": false,
+      "packNpmManually": false,
+      "packNpmRelationList": [],
+      "minifyWXSS": true,
+      "disableUseStrict": false,
+      "minifyWXML": true,
+      "showES6CompileOption": false,
+      "useCompilerPlugins": [
+        "typescript",
+        "less"
+      ]
+    },
+    "usingComponents": true
   }
 }
