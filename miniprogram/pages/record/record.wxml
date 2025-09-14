@@ -1,0 +1,260 @@
+<!--record.wxml-->
+<navigation-bar title="饮食记录" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+
+<view class="container">
+  <!-- 日期选择器 -->
+  <view class="date-selector">
+    <view class="date-nav" bindtap="previousDay">
+      <text class="nav-icon">‹</text>
+    </view>
+    <picker 
+      mode="date" 
+      value="{{selectedDate}}" 
+      bindchange="onDateChange"
+      class="date-picker"
+    >
+      <view class="date-display">
+        <text class="date-text">{{dateDisplay}}</text>
+        <text class="weekday">{{weekday}}</text>
+      </view>
+    </picker>
+    <view class="date-nav" bindtap="nextDay">
+      <text class="nav-icon">›</text>
+    </view>
+  </view>
+
+  <!-- 今日营养概览 -->
+  <view class="nutrition-overview">
+    <view class="nutrition-card">
+      <view class="nutrition-header">
+        <text class="card-title">今日摄入</text>
+        <text class="target-info">目标: {{dailyTarget.calories}}千卡</text>
+      </view>
+      
+      <view class="calories-progress">
+        <view class="progress-circle">
+          <view class="progress-value">
+            <text class="calories-consumed">{{todayNutrition.calories}}</text>
+            <text class="calories-unit">千卡</text>
+          </view>
+          <view class="progress-ring">
+            <view 
+              class="progress-fill" 
+              style="stroke-dasharray: {{caloriesProgress}} 314; stroke-dashoffset: 0"
+            ></view>
+          </view>
+        </view>
+        <view class="calories-remaining">
+          <text>剩余 {{Math.max(0, dailyTarget.calories - todayNutrition.calories)}} 千卡</text>
+        </view>
+      </view>
+      
+      <view class="macro-nutrients">
+        <view class="macro-item">
+          <text class="macro-label">蛋白质</text>
+          <view class="macro-bar">
+            <view 
+              class="macro-fill protein" 
+              style="width: {{Math.min(100, (todayNutrition.protein / dailyTarget.protein) * 100)}}%"
+            ></view>
+          </view>
+          <text class="macro-value">{{todayNutrition.protein}}g</text>
+        </view>
+        
+        <view class="macro-item">
+          <text class="macro-label">脂肪</text>
+          <view class="macro-bar">
+            <view 
+              class="macro-fill fat" 
+              style="width: {{Math.min(100, (todayNutrition.fat / dailyTarget.fat) * 100)}}%"
+            ></view>
+          </view>
+          <text class="macro-value">{{todayNutrition.fat}}g</text>
+        </view>
+        
+        <view class="macro-item">
+          <text class="macro-label">碳水</text>
+          <view class="macro-bar">
+            <view 
+              class="macro-fill carbs" 
+              style="width: {{Math.min(100, (todayNutrition.carbs / dailyTarget.carbs) * 100)}}%"
+            ></view>
+          </view>
+          <text class="macro-value">{{todayNutrition.carbs}}g</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 餐次记录 -->
+  <scroll-view class="meals-container" scroll-y="true">
+    <view class="meal-section" wx:for="{{mealSections}}" wx:key="type">
+      <view class="meal-header">
+        <view class="meal-info">
+          <text class="meal-name">{{item.name}}</text>
+          <text class="meal-calories">{{item.totalCalories}} 千卡</text>
+        </view>
+        <view class="meal-actions">
+          <text 
+            class="action-btn" 
+            data-meal="{{item.type}}"
+            bindtap="addFood"
+          >
+            + 添加
+          </text>
+        </view>
+      </view>
+      
+      <view class="food-list" wx:if="{{item.foods.length > 0}}">
+        <view 
+          class="food-item" 
+          wx:for="{{item.foods}}" 
+          wx:for-item="food"
+          wx:key="id"
+        >
+          <view class="food-image">
+            <image 
+              src="{{food.imagePath || '../../static/food-placeholder.png'}}" 
+              class="food-photo"
+              mode="aspectFill"
+            ></image>
+          </view>
+          
+          <view class="food-details">
+            <view class="food-name">{{food.name}}</view>
+            <view class="food-weight">{{food.weight}}g</view>
+            <view class="food-time">{{food.time}}</view>
+          </view>
+          
+          <view class="food-nutrition">
+            <text class="food-calories">{{food.calories}}千卡</text>
+            <text class="nutrition-detail">
+              蛋白质{{food.protein}}g · 脂肪{{food.fat}}g · 碳水{{food.carbs}}g
+            </text>
+          </view>
+          
+          <view class="food-actions">
+            <text 
+              class="edit-btn"
+              data-food-id="{{food.id}}"
+              bindtap="editFood"
+            >
+              编辑
+            </text>
+            <text 
+              class="delete-btn"
+              data-food-id="{{food.id}}"
+              bindtap="deleteFood"
+            >
+              删除
+            </text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="empty-meal" wx:else>
+        <image src="../../static/empty-plate.png" class="empty-icon"></image>
+        <text class="empty-text">还没有添加食物</text>
+        <text 
+          class="add-food-btn"
+          data-meal="{{item.type}}"
+          bindtap="addFood"
+        >
+          点击添加
+        </text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 添加食物弹窗 -->
+  <view class="add-food-modal {{showAddFood ? 'show' : ''}}" bindtap="hideAddFood">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">添加食物</text>
+        <text class="modal-close" bindtap="hideAddFood">✕</text>
+      </view>
+      
+      <view class="add-methods">
+        <view class="method-item" bindtap="gotoCamera">
+          <image src="../../static/camera-icon.png" class="method-icon"></image>
+          <text class="method-text">拍照识别</text>
+        </view>
+        
+        <view class="method-item" bindtap="gotoSearch">
+          <image src="../../static/search-icon.png" class="method-icon"></image>
+          <text class="method-text">搜索添加</text>
+        </view>
+        
+        <view class="method-item" bindtap="showCommonFoods">
+          <image src="../../static/common-icon.png" class="method-icon"></image>
+          <text class="method-text">常用食物</text>
+        </view>
+        
+        <view class="method-item" bindtap="showCustomFood">
+          <image src="../../static/custom-icon.png" class="method-icon"></image>
+          <text class="method-text">自定义</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 编辑食物弹窗 -->
+  <view class="edit-food-modal {{showEditFood ? 'show' : ''}}" bindtap="hideEditFood">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">编辑食物</text>
+        <text class="modal-close" bindtap="hideEditFood">✕</text>
+      </view>
+      
+      <view class="edit-form" wx:if="{{editingFood}}">
+        <view class="form-item">
+          <text class="form-label">食物名称</text>
+          <input 
+            class="form-input"
+            value="{{editingFood.name}}"
+            bindinput="onEditName"
+            placeholder="请输入食物名称"
+          />
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">重量(g)</text>
+          <input 
+            class="form-input"
+            type="digit"
+            value="{{editingFood.weight}}"
+            bindinput="onEditWeight"
+            placeholder="请输入重量"
+          />
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">餐次</text>
+          <picker 
+            mode="selector"
+            range="{{mealTypes}}"
+            value="{{editingFood.mealIndex}}"
+            bindchange="onEditMeal"
+          >
+            <view class="picker-display">{{mealTypes[editingFood.mealIndex]}}</view>
+          </picker>
+        </view>
+        
+        <view class="nutrition-display">
+          <view class="nutrition-row">
+            <text>热量: {{editingFood.calories}}千卡</text>
+          </view>
+          <view class="nutrition-row">
+            <text>蛋白质: {{editingFood.protein}}g</text>
+            <text>脂肪: {{editingFood.fat}}g</text>
+          </view>
+          <view class="nutrition-row">
+            <text>碳水化合物: {{editingFood.carbs}}g</text>
+          </view>
+        </view>
+        
+        <button class="save-btn" bindtap="saveEditFood">保存修改</button>
+      </view>
+    </view>
+  </view>
+</view>

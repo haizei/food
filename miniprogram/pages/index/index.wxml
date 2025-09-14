@@ -1,28 +1,173 @@
 <!--index.wxml-->
-<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    <view class="userinfo">
-      <block wx:if="{{canIUseNicknameComp && !hasUserInfo}}">
-        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
-        </view>
-      </block>
-      <block wx:elif="{{!hasUserInfo}}">
-        <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-        <view wx:else> 请使用2.10.4及以上版本基础库 </view>
-      </block>
-      <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-      </block>
+<navigation-bar title="智能识别" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+
+<view class="container">
+  <!-- 用户欢迎区域 -->
+  <view class="welcome-section">
+    <view class="user-greeting">
+      <image src="{{userInfo.avatarUrl}}" class="user-avatar"></image>
+      <view class="greeting-text">
+        <text class="greeting">{{greeting}}</text>
+        <text class="user-name">{{userInfo.nickName || '用户'}}</text>
+      </view>
     </view>
-    <view class="usermotto">
-      <text class="user-motto">{{motto}}</text>
+    
+    <view class="today-summary">
+      <view class="summary-item">
+        <text class="summary-value">{{todaySummary.calories}}</text>
+        <text class="summary-label">今日热量</text>
+        <text class="summary-unit">千卡</text>
+      </view>
+      <view class="summary-divider"></view>
+      <view class="summary-item">
+        <text class="summary-value">{{todaySummary.records}}</text>
+        <text class="summary-label">记录次数</text>
+        <text class="summary-unit">次</text>
+      </view>
     </view>
   </view>
-</scroll-view>
+
+  <!-- 快速识别区域 -->
+  <view class="quick-recognition">
+    <view class="section-title">
+      <text class="title-text">🍽️ 快速识别</text>
+      <text class="title-desc">拍照识别食物，获取营养信息</text>
+    </view>
+    
+    <view class="recognition-options">
+      <view class="recognition-card camera" bindtap="gotoCamera">
+        <view class="card-icon">📷</view>
+        <view class="card-content">
+          <text class="card-title">拍照识别</text>
+          <text class="card-desc">实时拍照识别食物</text>
+        </view>
+        <view class="card-arrow">›</view>
+      </view>
+      
+      <view class="recognition-card album" bindtap="chooseFromAlbum">
+        <view class="card-icon">🖼️</view>
+        <view class="card-content">
+          <text class="card-title">相册选择</text>
+          <text class="card-desc">从相册选择照片识别</text>
+        </view>
+        <view class="card-arrow">›</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日记录 -->
+  <view class="today-records">
+    <view class="section-header">
+      <text class="section-title">今日记录</text>
+      <text class="view-all" bindtap="gotoRecord">查看全部</text>
+    </view>
+    
+    <view class="records-list" wx:if="{{todayRecords.length > 0}}">
+      <view class="record-item" wx:for="{{todayRecords}}" wx:key="id">
+        <image src="{{item.imagePath || '../../static/food-placeholder.png'}}" class="record-image"></image>
+        <view class="record-info">
+          <text class="record-name">{{item.name}}</text>
+          <text class="record-meal">{{item.mealType}} · {{item.weight}}g</text>
+          <text class="record-time">{{item.time}}</text>
+        </view>
+        <view class="record-calories">
+          <text class="calories-value">{{item.calories}}</text>
+          <text class="calories-unit">千卡</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="empty-records" wx:else>
+      <view class="empty-icon">🍽️</view>
+      <text class="empty-text">今天还没有记录</text>
+      <text class="empty-desc">开始记录您的第一餐吧</text>
+    </view>
+  </view>
+
+  <!-- 功能入口 -->
+  <view class="feature-grid">
+    <view class="feature-item" bindtap="gotoSearch">
+      <view class="feature-icon search">🔍</view>
+      <text class="feature-name">搜索食物</text>
+    </view>
+    
+    <view class="feature-item" bindtap="gotoAnalytics">
+      <view class="feature-icon analytics">📊</view>
+      <text class="feature-name">数据分析</text>
+    </view>
+    
+    <view class="feature-item" bindtap="gotoProfile">
+      <view class="feature-icon profile">⚙️</view>
+      <text class="feature-name">目标设置</text>
+    </view>
+    
+    <view class="feature-item" bindtap="showTips">
+      <view class="feature-icon tips">💡</view>
+      <text class="feature-name">健康贴士</text>
+    </view>
+  </view>
+
+  <!-- 营养目标进度 -->
+  <view class="nutrition-progress">
+    <view class="section-title">
+      <text class="title-text">🎯 今日目标</text>
+      <text class="title-desc">营养摄入进度</text>
+    </view>
+    
+    <view class="progress-cards">
+      <view class="progress-card">
+        <text class="progress-name">热量</text>
+        <view class="progress-bar">
+          <view 
+            class="progress-fill calories" 
+            style="width: {{Math.min(100, (todaySummary.calories / dailyGoal.calories) * 100)}}%"
+          ></view>
+        </view>
+        <text class="progress-text">{{todaySummary.calories}}/{{dailyGoal.calories}}</text>
+      </view>
+      
+      <view class="progress-card">
+        <text class="progress-name">蛋白质</text>
+        <view class="progress-bar">
+          <view 
+            class="progress-fill protein" 
+            style="width: {{Math.min(100, (todayNutrition.protein / dailyGoal.protein) * 100)}}%"
+          ></view>
+        </view>
+        <text class="progress-text">{{todayNutrition.protein}}/{{dailyGoal.protein}}g</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 识别结果弹窗 -->
+  <view class="recognition-result-modal {{showResult ? 'show' : ''}}" bindtap="hideResult">
+    <view class="modal-content" catchtap="stopPropagation" wx:if="{{recognitionResults.length > 0}}">
+      <view class="modal-header">
+        <text class="modal-title">识别结果</text>
+        <text class="modal-close" bindtap="hideResult">✕</text>
+      </view>
+      
+      <view class="result-list">
+        <view class="result-item" wx:for="{{recognitionResults}}" wx:key="name">
+          <text class="food-name">{{item.name}}</text>
+          <text class="food-calories">{{item.calories}}千卡/100g</text>
+          <button 
+            class="add-btn" 
+            data-food="{{item}}"
+            bindtap="addFoodRecord"
+          >
+            添加
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-overlay {{isRecognizing ? 'show' : ''}">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">AI识别中...</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,514 @@
+/* analytics.less */
+page {
+  background: #f5f5f5;
+  height: 100vh;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 时间选择器 */
+.time-selector {
+  background: #fff;
+  padding: 30rpx;
+  border-radius: 0 0 20rpx 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 20rpx;
+}
+
+.selector-tabs {
+  display: flex;
+  background: #f8f9fa;
+  border-radius: 15rpx;
+  padding: 8rpx;
+  margin-bottom: 30rpx;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 15rpx 0;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active {
+  background: #3cc51f;
+  color: #fff;
+  font-weight: 600;
+}
+
+.date-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-btn {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  border-radius: 50%;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #3cc51f;
+}
+
+.period-display {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 内容滚动区域 */
+.content-scroll {
+  flex: 1;
+  padding: 0 30rpx;
+  padding-bottom: 120rpx;
+}
+
+/* 概览统计 */
+.overview-section {
+  margin-bottom: 30rpx;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+}
+
+.stat-card {
+  background: #fff;
+  padding: 30rpx;
+  border-radius: 20rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.stat-value {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #3cc51f;
+  line-height: 1.2;
+  margin-bottom: 10rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 5rpx;
+}
+
+.stat-unit {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 图表区域 */
+.chart-section {
+  background: #fff;
+  padding: 40rpx;
+  border-radius: 20rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.legend {
+  display: flex;
+  gap: 20rpx;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.legend-color {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 4rpx;
+}
+
+.legend-color.actual { background: #3cc51f; }
+.legend-color.target { background: #ff9500; }
+
+.legend-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.chart-container {
+  position: relative;
+}
+
+.chart-area {
+  display: flex;
+  height: 400rpx;
+  margin-bottom: 20rpx;
+}
+
+.y-axis {
+  width: 80rpx;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  padding-right: 20rpx;
+}
+
+.y-label {
+  font-size: 20rpx;
+  color: #999;
+  text-align: right;
+}
+
+.chart-content {
+  flex: 1;
+  position: relative;
+  border-left: 1rpx solid #e9ecef;
+  border-bottom: 1rpx solid #e9ecef;
+}
+
+.grid-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.grid-line {
+  position: absolute;
+  border: 1rpx dashed #f0f0f0;
+}
+
+.grid-line.horizontal {
+  left: 0;
+  right: 0;
+  height: 0;
+  top: calc(var(--line-index) * 25%);
+}
+
+.target-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2rpx;
+  background: #ff9500;
+  border-radius: 1rpx;
+}
+
+.bars-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+}
+
+.bar-group {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 10rpx;
+}
+
+.bar {
+  width: 40rpx;
+  border-radius: 4rpx 4rpx 0 0;
+  transition: all 0.3s ease;
+}
+
+.bar.actual {
+  background: linear-gradient(180deg, #3cc51f, #2ea617);
+}
+
+.bar-label {
+  position: absolute;
+  bottom: -35rpx;
+  font-size: 20rpx;
+  color: #999;
+  text-align: center;
+}
+
+.bar-value {
+  position: absolute;
+  top: -30rpx;
+  font-size: 20rpx;
+  color: #666;
+  text-align: center;
+}
+
+.x-axis {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 100rpx 0 100rpx;
+}
+
+.x-label {
+  font-size: 20rpx;
+  color: #999;
+  text-align: center;
+}
+
+/* 营养素分析 */
+.nutrition-analysis {
+  margin-bottom: 30rpx;
+}
+
+.nutrition-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.nutrition-card {
+  background: #fff;
+  padding: 30rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.nutrition-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.nutrition-percent {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.nutrition-card.protein .nutrition-percent { color: #ff6b6b; }
+.nutrition-card.fat .nutrition-percent { color: #4ecdc4; }
+.nutrition-card.carbs .nutrition-percent { color: #45b7d1; }
+
+.progress-container {
+  margin-bottom: 15rpx;
+}
+
+.progress-track {
+  height: 16rpx;
+  background: #f0f0f0;
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin-bottom: 10rpx;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 8rpx;
+  transition: width 0.6s ease;
+}
+
+.progress-fill.protein { background: #ff6b6b; }
+.progress-fill.fat { background: #4ecdc4; }
+.progress-fill.carbs { background: #45b7d1; }
+
+.progress-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.nutrition-status {
+  font-size: 24rpx;
+  padding: 8rpx 15rpx;
+  border-radius: 12rpx;
+  display: inline-block;
+}
+
+.nutrition-status.normal {
+  background: rgba(60, 197, 31, 0.1);
+  color: #3cc51f;
+}
+
+.nutrition-status.low {
+  background: rgba(255, 159, 0, 0.1);
+  color: #ff9f00;
+}
+
+.nutrition-status.high {
+  background: rgba(255, 71, 87, 0.1);
+  color: #ff4757;
+}
+
+/* 习惯分析 */
+.habits-analysis {
+  margin-bottom: 30rpx;
+}
+
+.habits-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.habit-card {
+  background: #fff;
+  padding: 30rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.habit-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+}
+
+.habit-content {
+  flex: 1;
+}
+
+.habit-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5rpx;
+}
+
+.habit-value {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #3cc51f;
+  margin-bottom: 5rpx;
+}
+
+.habit-desc {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 健康建议 */
+.suggestions-section {
+  margin-bottom: 30rpx;
+}
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.suggestion-item {
+  background: #fff;
+  padding: 30rpx;
+  border-radius: 20rpx;
+  display: flex;
+  gap: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.suggestion-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #fff;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.suggestion-icon.warning { background: #ff9500; }
+.suggestion-icon.success { background: #3cc51f; }
+.suggestion-icon.info { background: #45b7d1; }
+
+.suggestion-content {
+  flex: 1;
+}
+
+.suggestion-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.suggestion-desc {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 目标设置 */
+.goal-section {
+  margin-bottom: 30rpx;
+}
+
+.goal-card {
+  background: linear-gradient(135deg, #3cc51f, #2ea617);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  box-shadow: 0 4rpx 20rpx rgba(60, 197, 31, 0.3);
+}
+
+.goal-content {
+  flex: 1;
+}
+
+.goal-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.goal-desc {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+.goal-arrow {
+  font-size: 40rpx;
+  font-weight: 300;
+}

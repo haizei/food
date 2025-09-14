@@ -1,0 +1,300 @@
+<!--profile.wxml-->
+<navigation-bar title="个人中心" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-info">
+      <image src="{{userInfo.avatarUrl}}" class="avatar"></image>
+      <view class="user-details">
+        <text class="nickname">{{userInfo.nickName || '未设置'}}</text>
+        <text class="user-desc">{{userDesc}}</text>
+      </view>
+    </view>
+    
+    <view class="user-stats">
+      <view class="stat-item">
+        <text class="stat-value">{{userStats.recordDays}}</text>
+        <text class="stat-label">记录天数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{userStats.avgCalories}}</text>
+        <text class="stat-label">日均热量</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{userStats.goalReached}}%</text>
+        <text class="stat-label">目标达成</text>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view class="content-scroll" scroll-y="true">
+    <!-- 健康目标卡片 -->
+    <view class="goal-card">
+      <view class="card-header">
+        <text class="card-title">我的目标</text>
+        <text class="edit-btn" bindtap="editGoal">编辑</text>
+      </view>
+      
+      <view class="goal-progress">
+        <view class="progress-item">
+          <view class="progress-info">
+            <text class="progress-label">每日热量</text>
+            <text class="progress-value">{{dailyGoal.calories}}千卡</text>
+          </view>
+          <view class="progress-bar">
+            <view 
+              class="progress-fill calories" 
+              style="width: {{Math.min(100, (todayIntake.calories / dailyGoal.calories) * 100)}}%"
+            ></view>
+          </view>
+        </view>
+        
+        <view class="progress-item">
+          <view class="progress-info">
+            <text class="progress-label">蛋白质</text>
+            <text class="progress-value">{{dailyGoal.protein}}g</text>
+          </view>
+          <view class="progress-bar">
+            <view 
+              class="progress-fill protein" 
+              style="width: {{Math.min(100, (todayIntake.protein / dailyGoal.protein) * 100)}}%"
+            ></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 功能菜单 -->
+    <view class="menu-section">
+      <view class="menu-group">
+        <text class="group-title">健康管理</text>
+        
+        <view class="menu-item" bindtap="gotoGoalSetting">
+          <view class="menu-icon goal">🎯</view>
+          <view class="menu-content">
+            <text class="menu-title">目标设置</text>
+            <text class="menu-desc">设置健康目标和体重管理计划</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+        
+        <view class="menu-item" bindtap="gotoBodyInfo">
+          <view class="menu-icon body">📏</view>
+          <view class="menu-content">
+            <text class="menu-title">身体信息</text>
+            <text class="menu-desc">管理身高、体重等基础信息</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+        
+        <view class="menu-item" bindtap="gotoHealthReport">
+          <view class="menu-icon report">📊</view>
+          <view class="menu-content">
+            <text class="menu-title">健康报告</text>
+            <text class="menu-desc">查看详细的健康分析报告</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+      
+      <view class="menu-group">
+        <text class="group-title">应用设置</text>
+        
+        <view class="menu-item" bindtap="gotoReminderSetting">
+          <view class="menu-icon reminder">⏰</view>
+          <view class="menu-content">
+            <text class="menu-title">提醒设置</text>
+            <text class="menu-desc">设置用餐提醒和健康提醒</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+        
+        <view class="menu-item" bindtap="gotoDataManage">
+          <view class="menu-icon data">💾</view>
+          <view class="menu-content">
+            <text class="menu-title">数据管理</text>
+            <text class="menu-desc">备份、导出或清除数据</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+        
+        <view class="menu-item" bindtap="gotoPrivacySetting">
+          <view class="menu-icon privacy">🔒</view>
+          <view class="menu-content">
+            <text class="menu-title">隐私设置</text>
+            <text class="menu-desc">管理隐私和数据使用权限</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+      
+      <view class="menu-group">
+        <text class="group-title">帮助支持</text>
+        
+        <view class="menu-item" bindtap="gotoHelp">
+          <view class="menu-icon help">❓</view>
+          <view class="menu-content">
+            <text class="menu-title">使用帮助</text>
+            <text class="menu-desc">查看使用教程和常见问题</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+        
+        <view class="menu-item" bindtap="gotoFeedback">
+          <view class="menu-icon feedback">💬</view>
+          <view class="menu-content">
+            <text class="menu-title">意见反馈</text>
+            <text class="menu-desc">提交建议或问题反馈</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+        
+        <view class="menu-item" bindtap="gotoAbout">
+          <view class="menu-icon about">ℹ️</view>
+          <view class="menu-content">
+            <text class="menu-title">关于我们</text>
+            <text class="menu-desc">应用版本和开发团队信息</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 快速操作 -->
+    <view class="quick-actions">
+      <view class="action-card" bindtap="exportData">
+        <text class="action-icon">📤</text>
+        <text class="action-text">导出数据</text>
+      </view>
+      
+      <view class="action-card" bindtap="shareApp">
+        <text class="action-icon">📱</text>
+        <text class="action-text">分享应用</text>
+      </view>
+      
+      <view class="action-card" bindtap="rateApp">
+        <text class="action-icon">⭐</text>
+        <text class="action-text">给我评分</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 目标设置弹窗 -->
+  <view class="goal-modal {{showGoalModal ? 'show' : ''}}" bindtap="hideGoalModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">目标设置</text>
+        <text class="modal-close" bindtap="hideGoalModal">✕</text>
+      </view>
+      
+      <view class="goal-form">
+        <view class="form-section">
+          <text class="section-title">基础信息</text>
+          
+          <view class="form-item">
+            <text class="form-label">身高 (cm)</text>
+            <input 
+              type="digit"
+              class="form-input"
+              value="{{editGoal.height}}"
+              bindinput="onHeightChange"
+              placeholder="请输入身高"
+            />
+          </view>
+          
+          <view class="form-item">
+            <text class="form-label">体重 (kg)</text>
+            <input 
+              type="digit"
+              class="form-input"
+              value="{{editGoal.weight}}"
+              bindinput="onWeightChange"
+              placeholder="请输入体重"
+            />
+          </view>
+          
+          <view class="form-item">
+            <text class="form-label">年龄</text>
+            <input 
+              type="digit"
+              class="form-input"
+              value="{{editGoal.age}}"
+              bindinput="onAgeChange"
+              placeholder="请输入年龄"
+            />
+          </view>
+          
+          <view class="form-item">
+            <text class="form-label">性别</text>
+            <picker 
+              mode="selector"
+              range="{{genderOptions}}"
+              value="{{editGoal.genderIndex}}"
+              bindchange="onGenderChange"
+            >
+              <view class="picker-display">{{genderOptions[editGoal.genderIndex]}}</view>
+            </picker>
+          </view>
+        </view>
+        
+        <view class="form-section">
+          <text class="section-title">活动水平</text>
+          
+          <view class="activity-options">
+            <view 
+              class="activity-option {{editGoal.activityLevel === item.value ? 'active' : ''}}"
+              wx:for="{{activityLevels}}"
+              wx:key="value"
+              data-level="{{item.value}}"
+              bindtap="selectActivityLevel"
+            >
+              <text class="activity-name">{{item.name}}</text>
+              <text class="activity-desc">{{item.desc}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="form-section">
+          <text class="section-title">健康目标</text>
+          
+          <view class="goal-options">
+            <view 
+              class="goal-option {{editGoal.healthGoal === item.value ? 'active' : ''}}"
+              wx:for="{{healthGoals}}"
+              wx:key="value"
+              data-goal="{{item.value}}"
+              bindtap="selectHealthGoal"
+            >
+              <text class="goal-icon">{{item.icon}}</text>
+              <text class="goal-name">{{item.name}}</text>
+              <text class="goal-desc">{{item.desc}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="calculated-goals" wx:if="{{calculatedGoals.calories > 0}}">
+          <text class="section-title">推荐目标</text>
+          <view class="goal-item">
+            <text class="goal-label">每日热量：</text>
+            <text class="goal-value">{{calculatedGoals.calories}} 千卡</text>
+          </view>
+          <view class="goal-item">
+            <text class="goal-label">蛋白质：</text>
+            <text class="goal-value">{{calculatedGoals.protein}} g</text>
+          </view>
+          <view class="goal-item">
+            <text class="goal-label">脂肪：</text>
+            <text class="goal-value">{{calculatedGoals.fat}} g</text>
+          </view>
+          <view class="goal-item">
+            <text class="goal-label">碳水化合物：</text>
+            <text class="goal-value">{{calculatedGoals.carbs}} g</text>
+          </view>
+        </view>
+        
+        <button class="save-goal-btn" bindtap="saveGoal">保存目标</button>
+      </view>
+    </view>
+  </view>
+</view>
