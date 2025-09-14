@@ -1,0 +1,129 @@
+<!--camera.wxml-->
+<navigation-bar title="AI识别" back="{{false}}" color="white" background="transparent"></navigation-bar>
+
+<view class="container">
+  <!-- 相机预览区域 -->
+  <camera 
+    class="camera-preview" 
+    device-position="{{cameraPosition}}"
+    flash="{{flashMode}}"
+    frame-size="{{frameSize}}"
+    bindstop="error"
+    binderror="error"
+    bindinitialized="onCameraReady"
+  >
+    <!-- 识别框 -->
+    <cover-view class="recognition-frame">
+      <cover-view class="frame-corner top-left"></cover-view>
+      <cover-view class="frame-corner top-right"></cover-view>
+      <cover-view class="frame-corner bottom-left"></cover-view>
+      <cover-view class="frame-corner bottom-right"></cover-view>
+      <cover-view class="frame-text">将食物放在框内进行识别</cover-view>
+    </cover-view>
+    
+    <!-- 控制按钮区域 -->
+    <cover-view class="camera-controls">
+      <!-- 相册选择 -->
+      <cover-view class="control-btn album-btn" bindtap="chooseImage">
+        <cover-image src="../../static/album.png" class="btn-icon"></cover-image>
+        <cover-view class="btn-text">相册</cover-view>
+      </cover-view>
+      
+      <!-- 拍照按钮 -->
+      <cover-view class="control-btn capture-btn" bindtap="takePhoto">
+        <cover-view class="capture-circle">
+          <cover-view class="capture-inner {{isCapturing ? 'capturing' : ''}}"></cover-view>
+        </cover-view>
+      </cover-view>
+      
+      <!-- 闪光灯切换 -->
+      <cover-view class="control-btn flash-btn" bindtap="toggleFlash">
+        <cover-image src="{{flashMode === 'on' ? '../../static/flash-on.png' : '../../static/flash-off.png'}}" class="btn-icon"></cover-image>
+        <cover-view class="btn-text">闪光灯</cover-view>
+      </cover-view>
+    </cover-view>
+  </camera>
+  
+  <!-- 识别结果弹窗 -->
+  <view class="recognition-modal {{showResult ? 'show' : ''}}" bindtap="hideResult">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">识别结果</text>
+        <text class="modal-close" bindtap="hideResult">✕</text>
+      </view>
+      
+      <scroll-view class="result-list" scroll-y="true">
+        <view class="result-item" wx:for="{{recognitionResults}}" wx:key="index">
+          <view class="food-info">
+            <text class="food-name">{{item.name}}</text>
+            <text class="confidence">置信度: {{item.confidence}}%</text>
+          </view>
+          
+          <view class="nutrition-info">
+            <view class="weight-input">
+              <text>重量:</text>
+              <input 
+                type="digit" 
+                placeholder="{{item.estimatedWeight}}" 
+                value="{{item.weight}}"
+                data-index="{{index}}"
+                bindinput="onWeightChange"
+                class="weight-value"
+              />
+              <text>g</text>
+            </view>
+            
+            <view class="nutrition-grid">
+              <view class="nutrition-item">
+                <text class="nutrition-label">热量</text>
+                <text class="nutrition-value">{{item.calories}}千卡</text>
+              </view>
+              <view class="nutrition-item">
+                <text class="nutrition-label">蛋白质</text>
+                <text class="nutrition-value">{{item.protein}}g</text>
+              </view>
+              <view class="nutrition-item">
+                <text class="nutrition-label">脂肪</text>
+                <text class="nutrition-value">{{item.fat}}g</text>
+              </view>
+              <view class="nutrition-item">
+                <text class="nutrition-label">碳水</text>
+                <text class="nutrition-value">{{item.carbs}}g</text>
+              </view>
+            </view>
+          </view>
+          
+          <view class="meal-selection">
+            <text>添加到:</text>
+            <picker 
+              mode="selector" 
+              range="{{mealTypes}}" 
+              value="{{item.selectedMeal || 0}}"
+              data-index="{{index}}"
+              bindchange="onMealChange"
+            >
+              <view class="picker-value">{{mealTypes[item.selectedMeal || 0]}}</view>
+            </picker>
+          </view>
+          
+          <button 
+            class="add-record-btn" 
+            data-index="{{index}}"
+            bindtap="addToRecord"
+          >
+            添加到记录
+          </button>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+  
+  <!-- 加载中弹窗 -->
+  <view class="loading-modal {{isRecognizing ? 'show' : ''}}">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">AI正在识别中...</text>
+      <text class="loading-tip">请稍候，正在分析食物信息</text>
+    </view>
+  </view>
+</view>

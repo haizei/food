@@ -1,0 +1,360 @@
+/* camera.less */
+page {
+  height: 100vh;
+  background: #000;
+}
+
+.container {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
+.camera-preview {
+  width: 100%;
+  height: 100%;
+}
+
+/* 识别框样式 */
+.recognition-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300rpx;
+  height: 300rpx;
+  transform: translate(-50%, -50%);
+  border: 2rpx solid rgba(255, 255, 255, 0.8);
+  border-radius: 20rpx;
+}
+
+.frame-corner {
+  position: absolute;
+  width: 40rpx;
+  height: 40rpx;
+  border: 4rpx solid #3cc51f;
+}
+
+.top-left {
+  top: -2rpx;
+  left: -2rpx;
+  border-right: none;
+  border-bottom: none;
+  border-top-left-radius: 20rpx;
+}
+
+.top-right {
+  top: -2rpx;
+  right: -2rpx;
+  border-left: none;
+  border-bottom: none;
+  border-top-right-radius: 20rpx;
+}
+
+.bottom-left {
+  bottom: -2rpx;
+  left: -2rpx;
+  border-right: none;
+  border-top: none;
+  border-bottom-left-radius: 20rpx;
+}
+
+.bottom-right {
+  bottom: -2rpx;
+  right: -2rpx;
+  border-left: none;
+  border-top: none;
+  border-bottom-right-radius: 20rpx;
+}
+
+.frame-text {
+  position: absolute;
+  top: -60rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 26rpx;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 控制按钮区域 */
+.camera-controls {
+  position: absolute;
+  bottom: 120rpx;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 80rpx;
+}
+
+.control-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.album-btn, .flash-btn {
+  width: 80rpx;
+  height: 80rpx;
+  justify-content: center;
+}
+
+.btn-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 10rpx;
+}
+
+.btn-text {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 拍照按钮 */
+.capture-btn {
+  position: relative;
+}
+
+.capture-circle {
+  width: 120rpx;
+  height: 120rpx;
+  border: 6rpx solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.capture-inner {
+  width: 90rpx;
+  height: 90rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.capture-inner.capturing {
+  transform: scale(0.8);
+  background: #3cc51f;
+}
+
+/* 识别结果弹窗 */
+.recognition-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.recognition-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 80vh;
+  background: #fff;
+  border-radius: 40rpx 40rpx 0 0;
+  padding: 40rpx;
+  box-sizing: border-box;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-close {
+  font-size: 40rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.result-list {
+  max-height: 60vh;
+}
+
+.result-item {
+  margin-bottom: 40rpx;
+  padding: 30rpx;
+  background: #f8f9fa;
+  border-radius: 20rpx;
+}
+
+.food-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.food-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.confidence {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.nutrition-info {
+  margin-bottom: 30rpx;
+}
+
+.weight-input {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.weight-value {
+  margin: 0 10rpx;
+  padding: 10rpx 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 10rpx;
+  background: #fff;
+  text-align: center;
+  width: 120rpx;
+}
+
+.nutrition-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+}
+
+.nutrition-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx;
+  background: #fff;
+  border-radius: 15rpx;
+}
+
+.nutrition-label {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 5rpx;
+}
+
+.nutrition-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.meal-selection {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.picker-value {
+  margin-left: 20rpx;
+  padding: 15rpx 30rpx;
+  background: #fff;
+  border: 1rpx solid #ddd;
+  border-radius: 10rpx;
+  font-size: 26rpx;
+}
+
+.add-record-btn {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #3cc51f;
+  color: #fff;
+  border: none;
+  border-radius: 15rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* 加载中弹窗 */
+.loading-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.loading-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 40rpx;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 30rpx;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(60, 197, 31, 0.3);
+  border-top: 4rpx solid #3cc51f;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 30rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.loading-tip {
+  font-size: 24rpx;
+  color: #666;
+}

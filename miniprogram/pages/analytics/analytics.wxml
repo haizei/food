@@ -1,0 +1,258 @@
+<!--analytics.wxml-->
+<navigation-bar title="数据分析" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+
+<view class="container">
+  <!-- 时间范围选择 -->
+  <view class="time-selector">
+    <view class="selector-tabs">
+      <view 
+        class="tab-item {{timeRange === 'day' ? 'active' : ''}}"
+        data-range="day"
+        bindtap="switchTimeRange"
+      >
+        日
+      </view>
+      <view 
+        class="tab-item {{timeRange === 'week' ? 'active' : ''}}"
+        data-range="week"
+        bindtap="switchTimeRange"
+      >
+        周
+      </view>
+      <view 
+        class="tab-item {{timeRange === 'month' ? 'active' : ''}}"
+        data-range="month"
+        bindtap="switchTimeRange"
+      >
+        月
+      </view>
+    </view>
+    
+    <view class="date-navigation">
+      <view class="nav-btn" bindtap="previousPeriod">‹</view>
+      <view class="period-display">{{currentPeriodText}}</view>
+      <view class="nav-btn" bindtap="nextPeriod">›</view>
+    </view>
+  </view>
+
+  <scroll-view class="content-scroll" scroll-y="true">
+    <!-- 概览卡片 -->
+    <view class="overview-section">
+      <view class="stats-grid">
+        <view class="stat-card">
+          <view class="stat-value">{{overview.avgCalories}}</view>
+          <view class="stat-label">平均热量</view>
+          <view class="stat-unit">千卡/天</view>
+        </view>
+        
+        <view class="stat-card">
+          <view class="stat-value">{{overview.totalDays}}</view>
+          <view class="stat-label">记录天数</view>
+          <view class="stat-unit">天</view>
+        </view>
+        
+        <view class="stat-card">
+          <view class="stat-value">{{overview.targetReachedDays}}</view>
+          <view class="stat-label">达标天数</view>
+          <view class="stat-unit">天</view>
+        </view>
+        
+        <view class="stat-card">
+          <view class="stat-value">{{overview.completionRate}}%</view>
+          <view class="stat-label">完成率</view>
+          <view class="stat-unit"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 热量趋势图表 -->
+    <view class="chart-section">
+      <view class="section-header">
+        <text class="section-title">热量趋势</text>
+        <view class="legend">
+          <view class="legend-item">
+            <view class="legend-color actual"></view>
+            <text class="legend-text">实际摄入</text>
+          </view>
+          <view class="legend-item">
+            <view class="legend-color target"></view>
+            <text class="legend-text">目标热量</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="chart-container">
+        <view class="chart-area">
+          <!-- Y轴刻度 -->
+          <view class="y-axis">
+            <view class="y-label" wx:for="{{yAxisLabels}}" wx:key="*this">{{item}}</view>
+          </view>
+          
+          <!-- 图表内容 -->
+          <view class="chart-content">
+            <!-- 网格线 -->
+            <view class="grid-lines">
+              <view class="grid-line horizontal" wx:for="{{5}}" wx:key="*this"></view>
+              <view class="grid-line vertical" wx:for="{{chartData.length}}" wx:key="*this"></view>
+            </view>
+            
+            <!-- 目标线 -->
+            <view class="target-line" style="bottom: {{targetLinePosition}}%"></view>
+            
+            <!-- 数据柱状图 -->
+            <view class="bars-container">
+              <view 
+                class="bar-group" 
+                wx:for="{{chartData}}" 
+                wx:key="date"
+                style="left: {{index * (100 / chartData.length)}}%; width: {{100 / chartData.length}}%"
+              >
+                <view 
+                  class="bar actual" 
+                  style="height: {{item.actualPercent}}%"
+                ></view>
+                <view class="bar-label">{{item.label}}</view>
+                <view class="bar-value">{{item.calories}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+        
+        <!-- X轴标签 -->
+        <view class="x-axis">
+          <view class="x-label" wx:for="{{chartData}}" wx:key="date">{{item.label}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 营养素分析 -->
+    <view class="nutrition-analysis">
+      <view class="section-header">
+        <text class="section-title">营养素分析</text>
+      </view>
+      
+      <view class="nutrition-cards">
+        <view class="nutrition-card protein">
+          <view class="card-header">
+            <text class="nutrition-name">蛋白质</text>
+            <text class="nutrition-percent">{{nutritionAnalysis.protein.percent}}%</text>
+          </view>
+          <view class="progress-container">
+            <view class="progress-track">
+              <view 
+                class="progress-fill protein" 
+                style="width: {{nutritionAnalysis.protein.percent}}%"
+              ></view>
+            </view>
+            <text class="progress-text">{{nutritionAnalysis.protein.current}}g / {{nutritionAnalysis.protein.target}}g</text>
+          </view>
+          <view class="nutrition-status {{nutritionAnalysis.protein.status}}">
+            {{nutritionAnalysis.protein.statusText}}
+          </view>
+        </view>
+        
+        <view class="nutrition-card fat">
+          <view class="card-header">
+            <text class="nutrition-name">脂肪</text>
+            <text class="nutrition-percent">{{nutritionAnalysis.fat.percent}}%</text>
+          </view>
+          <view class="progress-container">
+            <view class="progress-track">
+              <view 
+                class="progress-fill fat" 
+                style="width: {{nutritionAnalysis.fat.percent}}%"
+              ></view>
+            </view>
+            <text class="progress-text">{{nutritionAnalysis.fat.current}}g / {{nutritionAnalysis.fat.target}}g</text>
+          </view>
+          <view class="nutrition-status {{nutritionAnalysis.fat.status}}">
+            {{nutritionAnalysis.fat.statusText}}
+          </view>
+        </view>
+        
+        <view class="nutrition-card carbs">
+          <view class="card-header">
+            <text class="nutrition-name">碳水化合物</text>
+            <text class="nutrition-percent">{{nutritionAnalysis.carbs.percent}}%</text>
+          </view>
+          <view class="progress-container">
+            <view class="progress-track">
+              <view 
+                class="progress-fill carbs" 
+                style="width: {{nutritionAnalysis.carbs.percent}}%"
+              ></view>
+            </view>
+            <text class="progress-text">{{nutritionAnalysis.carbs.current}}g / {{nutritionAnalysis.carbs.target}}g</text>
+          </view>
+          <view class="nutrition-status {{nutritionAnalysis.carbs.status}}">
+            {{nutritionAnalysis.carbs.statusText}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 饮食习惯分析 -->
+    <view class="habits-analysis">
+      <view class="section-header">
+        <text class="section-title">饮食习惯</text>
+      </view>
+      
+      <view class="habits-cards">
+        <view class="habit-card">
+          <view class="habit-icon">🍽️</view>
+          <view class="habit-content">
+            <text class="habit-title">用餐规律性</text>
+            <text class="habit-value">{{habitsAnalysis.mealRegularity}}%</text>
+            <text class="habit-desc">{{habitsAnalysis.mealRegularityDesc}}</text>
+          </view>
+        </view>
+        
+        <view class="habit-card">
+          <view class="habit-icon">⏰</view>
+          <view class="habit-content">
+            <text class="habit-title">记录频率</text>
+            <text class="habit-value">{{habitsAnalysis.recordFrequency}}%</text>
+            <text class="habit-desc">{{habitsAnalysis.recordFrequencyDesc}}</text>
+          </view>
+        </view>
+        
+        <view class="habit-card">
+          <view class="habit-icon">🥗</view>
+          <view class="habit-content">
+            <text class="habit-title">食物多样性</text>
+            <text class="habit-value">{{habitsAnalysis.foodDiversity}}</text>
+            <text class="habit-desc">{{habitsAnalysis.foodDiversityDesc}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 健康建议 */
+    <view class="suggestions-section">
+      <view class="section-header">
+        <text class="section-title">健康建议</text>
+      </view>
+      
+      <view class="suggestions-list">
+        <view class="suggestion-item" wx:for="{{healthSuggestions}}" wx:key="type">
+          <view class="suggestion-icon {{item.type}}">{{item.icon}}</view>
+          <view class="suggestion-content">
+            <text class="suggestion-title">{{item.title}}</text>
+            <text class="suggestion-desc">{{item.description}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 目标设置入口 -->
+    <view class="goal-section">
+      <view class="goal-card" bindtap="gotoGoalSetting">
+        <view class="goal-content">
+          <text class="goal-title">调整健康目标</text>
+          <text class="goal-desc">根据分析结果优化您的健康目标</text>
+        </view>
+        <view class="goal-arrow">›</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
